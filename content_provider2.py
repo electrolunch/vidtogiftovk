@@ -80,7 +80,10 @@ class VideoProvider(ContentProvider):
         parser = InstagramParser(url_or_shortcode)
         post_info = InstagramPostInfo(parser)
         video_url = post_info.video_url
-        await self.bot.send_message(chat_id=message.chat.id, text=f"Video url: {video_url}")
+        if not video_url:
+            return None
+        if video_url:
+            await self.bot.send_message(chat_id=message.chat.id, text=f"Video url: {video_url}")
         description = post_info.description
         if description:
             await self.bot.send_message(chat_id=message.chat.id, text=f"Description: {description}")
@@ -111,7 +114,13 @@ class VideoProvider(ContentProvider):
         if message.author_signature=="inst_url":
             if self.video_handling_flag is False: return
             video_url=await self.extract_video_url(message)
+            if not video_url:
+                await self.bot.send_message(chat_id=message.chat.id, text="Video url is not found")
+                return
             response = requests.get(video_url)
+            if not response.ok:
+                await self.bot.send_message(chat_id=message.chat.id, text="Video is not loaded")
+                return
             vid_uuid = str(uuid.uuid4())
             file_name="video"+vid_uuid+".mp4"
             with open(file_name, 'wb') as f:

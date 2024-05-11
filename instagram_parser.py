@@ -55,11 +55,13 @@ class InstagramPostInfo:
     def __init__(self, parser):
         self.parser = parser
         self.data = self.parser.get_post()
-        self.post = self.data['data']['shortcode_media']
+        self.post = self.data.get('data', {}).get('shortcode_media', None)
 
     def get_value(self, path, default=None):
         keys = path.split('.')
         value = self.post
+        if not value:
+            return default
         for key in keys:
             if isinstance(value, list):
                 value = [v.get(key, default) if v else default for v in value]
