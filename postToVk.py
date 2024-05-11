@@ -5,7 +5,7 @@ import uuid
 #%%
 gif_path="video1.gif"
 login="+79006398664"
-password="ojnebgfhjljrc1"
+password="WZQOs-6EyY7CmZt"
 
 def auth_handler():
     """ При двухфакторной аутентификации вызывается эта функция."""

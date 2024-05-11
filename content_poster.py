@@ -28,14 +28,15 @@ class VkPoster(ContentPoster):
     def __init__(self):
         self.login="+79006398664"
         self.group_id = -129592796
-        self.password="ojnebgfhjljrc1"
+        self.password="WZQOs-6EyY7CmZt"
         self.token="vk1.a.iAT3_sClCSwAkAMSGMc78Oi5ELK_Fi3ErGgsWS-J9sBDsUCzpLNvCX0fYs_hqHx5inT9zmBZCeOu76_DMOrNUv-S8P08Uog7e7ShbcVDUV-Sev81L4pz-FhD1zjgtqwYZ1PHX2eytXlvCzyD_NKzBU-5Uv_xT0gNjisyAZnxqEuRQhg5jpSHr1RA6D9Gd4PyzjxUm94oizkuGYK7PTQ_bg"
         self.vk_session = vk_api.VkApi(
             login="+79006398664",
-            password="ojnebgfhjljrc1",
+            password="WZQOs-6EyY7CmZt",
             auth_handler=self.auth_handler,
             token="vk1.a.iAT3_sClCSwAkAMSGMc78Oi5ELK_Fi3ErGgsWS-J9sBDsUCzpLNvCX0fYs_hqHx5inT9zmBZCeOu76_DMOrNUv-S8P08Uog7e7ShbcVDUV-Sev81L4pz-FhD1zjgtqwYZ1PHX2eytXlvCzyD_NKzBU-5Uv_xT0gNjisyAZnxqEuRQhg5jpSHr1RA6D9Gd4PyzjxUm94oizkuGYK7PTQ_bg",
-            captcha_handler=captcha_handler  # функция для обработки капчи
+            captcha_handler=captcha_handler,# функция для обработки капчи
+            app_id=6287487  
             )
         self.vk_session.auth()
         self.vk = self.vk_session.get_api()
