@@ -1,0 +1,212 @@
+{
+	"variables": [],
+	"info": {
+		"name": "online-convert.com tutorial",
+		"_postman_id": "3b352a9b-63d7-ce15-4c91-277b816af330",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Convert JPG to PNG",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "var data = JSON.parse(responseBody);\r\npostman.setEnvironmentVariable(\"job-id\", data.id);\r\npostman.setEnvironmentVariable(\"job-token\", data.token);\r\npostman.setEnvironmentVariable(\"upload-server\", data.server);"
+					}
+				}
+			],
+			"request": {
+				"url": "https://api2.online-convert.com/jobs",
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-oc-api-key",
+						"value": "{{api-key}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"input\": [{\n        \"type\": \"remote\",\n        \"source\": \"https://cdn.online-convert.com/example-file/raster%20image/jpg/example_small.jpg\"\n    }],\n    \"conversion\": [{\n        \"target\": \"png\"\n    }]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Job Info",
+			"request": {
+				"url": "https://api2.online-convert.com/jobs/{{job-id}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-oc-api-key",
+						"value": "{{api-key}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create skeleton",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "var data = JSON.parse(responseBody);\r\npostman.setEnvironmentVariable(\"job-id\", data.id);\r\npostman.setEnvironmentVariable(\"job-token\", data.token);\r\npostman.setEnvironmentVariable(\"upload-server\", data.server);"
+					}
+				}
+			],
+			"request": {
+				"url": "https://api2.online-convert.com/jobs",
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-oc-api-key",
+						"value": "{{api-key}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"conversion\": [{\r\n        \"category\": \"image\",\r\n        \"target\": \"png\"\r\n    }]\r\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Uploading a file",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "var data = JSON.parse(responseBody);\r\ntests[\"Content-Type is 'application/json'\"] = postman.getResponseHeader(\"Content-Type\") === 'application/json';\r\ntests[\"Successful POST FILE request\"] = responseCode.code === 200;"
+					}
+				}
+			],
+			"request": {
+				"url": "{{upload-server}}/upload-file/{{job-id}}",
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-oc-api-key",
+						"value": "{{api-key}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"value": "799px_Red_eyed_tree_frog_edit2 (3).gif",
+							"type": "file",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Convert JPG to PDF with options",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "var data = JSON.parse(responseBody);\r\npostman.setEnvironmentVariable(\"job-id\", data.id);\r\npostman.setEnvironmentVariable(\"job-token\", data.token);\r\npostman.setEnvironmentVariable(\"upload-server\", data.server);"
+					}
+				}
+			],
+			"request": {
+				"url": "https://api2.online-convert.com/jobs",
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-oc-api-key",
+						"value": "{{api-key}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"input\": [{\n        \"type\": \"remote\",\n        \"source\": \"https://cdn.online-convert.com/example-file/raster%20image/png/example.png\"\n    }],\n    \"conversion\": [{\n        \"target\": \"txt\",\n        \"options\": {\n            \"ocr\": true,\n            \"language\": \"eng\"\n        }\n    }]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Batch convert several files to MP3 (several inputs)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "var data = JSON.parse(responseBody);\r\npostman.setEnvironmentVariable(\"job-id\", data.id);\r\npostman.setEnvironmentVariable(\"job-token\", data.token);\r\npostman.setEnvironmentVariable(\"upload-server\", data.server);"
+					}
+				}
+			],
+			"request": {
+				"url": "https://api2.online-convert.com/jobs",
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-oc-api-key",
+						"value": "{{api-key}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"input\": [\n        {\n            \"type\": \"remote\",\n            \"source\": \"https://static.online-convert.com/example-file/audio/midi/example.midi\"\n        },\n        {\n            \"type\": \"remote\",\n            \"source\": \"https://static.online-convert.com/example-file/audio/ogg/example.ogg\"\n        },\n        {\n            \"type\": \"remote\",\n            \"source\": \"http://static.online-convert.com/example-file/audio/wav/example.wav\"\n        }\n    ],\n    \"conversion\": [{\n        \"target\": \"mp3\",\n        \"options\": {\n            \"audio_bitrate\": 192,\n            \"normalize\": true\n        }\n    }]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Convert MOV to several HTML5 videos (several conversions)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "var data = JSON.parse(responseBody);\r\npostman.setEnvironmentVariable(\"job-id\", data.id);\r\npostman.setEnvironmentVariable(\"job-token\", data.token);\r\npostman.setEnvironmentVariable(\"upload-server\", data.server);"
+					}
+				}
+			],
+			"request": {
+				"url": "https://api2.online-convert.com/jobs",
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-oc-api-key",
+						"value": "{{api-key}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"input\": [\n        {\n            \"type\": \"remote\",\n            \"source\": \"https://static.online-convert.com/example-file/video/mov/example.mov\"\n        }\n    ],\n    \"conversion\": [\n        {\n            \"target\": \"mp4\",\n            \"options\": {\n                \"width\": 640,\n                \"height\": 480\n            }\n        },\n        {\n            \"target\": \"webm\",\n            \"options\": {\n                \"width\": 320,\n                \"height\": 240\n            }\n        },\n        {\n            \"target\": \"ogv\",\n            \"options\": {\n                \"width\": 800,\n                \"height\": 600\n            }\n        }\n    ]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
