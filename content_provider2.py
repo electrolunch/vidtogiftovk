@@ -81,6 +81,9 @@ class VideoProvider(ContentProvider):
         post_info = InstagramPostInfo(parser)
         video_url = post_info.video_url
         await self.bot.send_message(chat_id=message.chat.id, text=f"Video url: {video_url}")
+        description = post_info.description
+        if description:
+            await self.bot.send_message(chat_id=message.chat.id, text=f"Description: {description}")
         parser.clear_cache()
         return video_url
         
