@@ -1,10 +1,13 @@
 import asyncio
 import logging
+import re
 import time
 import uuid
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from aiogram import Bot, Dispatcher, executor, types
-
+from instagram_parser import InstagramParser, InstagramPostInfo
+import requests
+from unittest.mock import Mock
 class ContentProvider():
     logging.basicConfig(level=logging.INFO)
     pass
@@ -26,8 +29,8 @@ class VideoProvider(ContentProvider):
         # def echo_message(message):
         #     self.echo_message(message)
         @self.dp.message_handler(content_types=types.ContentTypes.TEXT)
-        async def echo(message: types.Message):
-            await self.bot.send_message(chat_id=message.chat.id, text=message.text)
+        async def handle_docs_url(message: types.Message):
+            await self.handle_docs_url(message)
 
         @self.dp.message_handler(commands=['loadurl'])
         def Loadurl(message):
@@ -47,6 +50,42 @@ class VideoProvider(ContentProvider):
         self.url_func=None
         self.video_queue = asyncio.Queue()
 
+    def is_url(self,message: str) -> bool:
+        url_regex = re.compile(
+            r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+        )
+        return bool(url_regex.match(message))
+    
+    def is_instagram_url(self,message: str) -> bool:
+        instagram_url_regex = re.compile(
+            r'^https://www\.instagram\.com/.*$'
+        )
+        return bool(instagram_url_regex.match(message))
+    
+    async def handle_docs_url(self,message: types.Message):
+        await self.bot.send_message(chat_id=message.chat.id, text="Check url...")
+        if not self.is_url(message.text):
+            await self.bot.send_message(chat_id=message.chat.id, text="It's not url")
+            return
+        if not self.is_instagram_url(message.text):
+            await self.bot.send_message(chat_id=message.chat.id, text="It's not instagram url")
+            return
+        message.author_signature="inst_url"
+        await self.video_queue.put(message)
+
+
+    async def extract_video_url(self,message):
+        await self.bot.send_message(chat_id=message.chat.id, text="Extracting video url...")
+        url_or_shortcode = message.text
+        parser = InstagramParser(url_or_shortcode)
+        post_info = InstagramPostInfo(parser)
+        video_url = post_info.video_url
+        await self.bot.send_message(chat_id=message.chat.id, text=f"Video url: {video_url}")
+        parser.clear_cache()
+        return video_url
+        
+        pass
+        # await self.url_func(message.text)
     async def handle_docs_video(self,message: types.Message):
         await self.video_queue.put(message)
         # await self.video_handler_cycle()
@@ -66,15 +105,26 @@ class VideoProvider(ContentProvider):
     async def video_handler(self, message):
         self.message=message
         if self.video_handling_flag is False: return
-        await self.bot.send_message(chat_id=message.chat.id, text="Start loading...")
-        vid_uuid = str(uuid.uuid4())
-        file_name="video"+vid_uuid+".mp4"
-        file_id = message.video.file_id
-        file_info = await self.bot.get_file(file_id)
-        print(file_info.file_path)
-        await self.bot.download_file(file_info.file_path, file_name)
-        await self.bot.send_message(chat_id=message.chat.id, text="Video is loaded")
-        await self.vid_func(file_name)
+        if message.author_signature=="inst_url":
+            if self.video_handling_flag is False: return
+            video_url=await self.extract_video_url(message)
+            response = requests.get(video_url)
+            vid_uuid = str(uuid.uuid4())
+            file_name="video"+vid_uuid+".mp4"
+            with open(file_name, 'wb') as f:
+                f.write(response.content)
+            await self.bot.send_message(chat_id=message.chat.id, text="Video is loaded")
+            await self.vid_func(file_name)
+        else:
+            await self.bot.send_message(chat_id=message.chat.id, text="Start loading...")
+            vid_uuid = str(uuid.uuid4())
+            file_name="video"+vid_uuid+".mp4"
+            file_id = message.video.file_id
+            file_info = await self.bot.get_file(file_id)
+            print(file_info.file_path)
+            await self.bot.download_file(file_info.file_path, file_name)
+            await self.bot.send_message(chat_id=message.chat.id, text="Video is loaded")
+            await self.vid_func(file_name)
         # self.video_handling_flag=False
 
     def Loadurl(self,message):
