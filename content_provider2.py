@@ -8,6 +8,8 @@ from aiogram import Bot, Dispatcher, executor, types
 from instagram_parser import InstagramParser, InstagramPostInfo
 import requests
 from unittest.mock import Mock
+import json
+
 class ContentProvider():
     logging.basicConfig(level=logging.INFO)
     pass
@@ -20,6 +22,7 @@ class VideoProvider(ContentProvider):
         self.scheduler = AsyncIOScheduler()
         self.scheduler.add_job(self.video_handler_cycle, "interval", seconds=50)
         self.video_handling_flag=True
+        self.message=1193643286
 
         @self.dp.message_handler(content_types=types.ContentTypes.VIDEO)
         async def handle_docs_video(message: types.Message):
@@ -63,6 +66,7 @@ class VideoProvider(ContentProvider):
         return bool(instagram_url_regex.match(message))
     
     async def handle_docs_url(self,message: types.Message):
+        print(message.chat.id)
         await self.bot.send_message(chat_id=message.chat.id, text="Check url...")
         if not self.is_url(message.text):
             await self.bot.send_message(chat_id=message.chat.id, text="It's not url")
@@ -177,10 +181,64 @@ class VideoProvider(ContentProvider):
 
     async def func_log(self,text):
         # await self.bot.send_message(chat_id=self.message.chat.id, text=text)
-        await self.bot.send_message(chat_id=self.message.chat.id, text=text)
+        if self.message is None:
+            print("message is None")
+            return
+        try:
+            await self.bot.send_message(chat_id=self.message.chat.id, text=text)
+        except Exception as e:
+            print(e)
         
 
     # @dp.message_handler(content_types=types.ContentTypes.TEXT)
     # async def echo(message: types.Message):
     #     await bot.send_message(chat_id=message.chat.id, text=message.text)
+
+class Vk_provider(ContentProvider):
+    def __init__(self,sheduller=None,vk=None):
+        self.vk=vk
+        self.sheduller=sheduller
+        self.group_id = -146916884
+        self.log_func=print
+
+    def SetVkPostHandler(self,func,log_func=None):
+        if log_func is not None:
+            self.log_func=log_func
+        self.vk_post_handler=func
+        self.sheduller.add_job(self.vkpost_handler_cycle, "interval", seconds=100)
+
+
+
+    async def vkpost_handler_cycle(self):
+        print("Запрос постов из группы")
+        response = self.vk.wall.get(owner_id=self.group_id, count=10)
+        outputitem= None
+        print("Получен ответ от сервера")
+        with open('vkpostdata.json', 'w', encoding="utf-8") as outfile:
+            json.dump(response, outfile)
+        try:
+            # read hashes from file
+            print("Чтение хешей из файла")
+            with open('hash.txt', 'r') as f:
+                hashes_old = f.read().splitlines()
+
+            print("Получение новых постов")
+            for item in reversed(response['items']):
+                hash = item['hash']
+                if hash not in hashes_old:
+                    text = item['text']
+                    type = item['attachments'][0]['type']
+                    with open('hash.txt', 'a') as f:
+                        f.write(hash + '\n')
+                    print("Пост найден")
+                    await self.vk_post_handler(item)
+                    break
+        except Exception as e:
+            await self.log_func(str(e))
+            response = None
+
         
+        #save response to file
+        
+        # with open('vkpostdata.json', 'w') as outfile:
+        #     json.dump(response, outfile)

@@ -1,7 +1,7 @@
 import time
 import vk_api
 import uuid
-
+from tenacity import retry, stop_after_attempt, wait_fixed
 class ContentPoster():
     pass
 
@@ -58,3 +58,36 @@ class VkPoster(ContentPoster):
         attachments=[f"doc{doc['doc']['owner_id']}_{doc['doc']['id']}"])
         await log_func("gif uploaded to vk")
         return gif_path
+
+class Tposter(ContentPoster):
+    def __init__(self,scheduler,dp):
+        self.scheduler=scheduler
+        self.dp=dp
+        self.bot=dp.bot
+        self.channel_id='@t_lapland'
+
+    async def post_to_tg(self,vk_post_data,log_func):
+        try:
+            # print(vk_post_data)
+            type=vk_post_data['attachments'][0]['type']
+            text=vk_post_data['text']
+            print(text)
+            if type=='photo':
+                url=vk_post_data['attachments'][0][type]['sizes'][-1]['url']
+                await log_func(url)
+                await self.send_photo(text, url)
+            if type=='doc':
+                url=vk_post_data['attachments'][0][type]['url']
+                await log_func(url)
+                await self.send_doc(text, url)
+        except Exception as e:
+            await log_func(str(e))
+            
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
+    async def send_doc(self, text, url):
+        await self.bot.send_animation(chat_id=self.channel_id, animation=url,caption=text)
+
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
+    async def send_photo(self, text, url):
+        await self.bot.send_photo(chat_id=self.channel_id, photo=url,caption=text)
+        # await self.bot.send_message(self.channel_id, text)
