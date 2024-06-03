@@ -31,12 +31,12 @@ class VkPoster(ContentPoster):
         self.password="tgb_6!!jHG#6666"
         self.token="vk1.a.iAT3_sClCSwAkAMSGMc78Oi5ELK_Fi3ErGgsWS-J9sBDsUCzpLNvCX0fYs_hqHx5inT9zmBZCeOu76_DMOrNUv-S8P08Uog7e7ShbcVDUV-Sev81L4pz-FhD1zjgtqwYZ1PHX2eytXlvCzyD_NKzBU-5Uv_xT0gNjisyAZnxqEuRQhg5jpSHr1RA6D9Gd4PyzjxUm94oizkuGYK7PTQ_bg"
         self.vk_session = vk_api.VkApi(
-            login="+79006398664",
-            password="Z0YVyjWe47!fd-S",
+            login=self.login,
+            password=self.password,
             auth_handler=self.auth_handler,
             token="vk1.a.iAT3_sClCSwAkAMSGMc78Oi5ELK_Fi3ErGgsWS-J9sBDsUCzpLNvCX0fYs_hqHx5inT9zmBZCeOu76_DMOrNUv-S8P08Uog7e7ShbcVDUV-Sev81L4pz-FhD1zjgtqwYZ1PHX2eytXlvCzyD_NKzBU-5Uv_xT0gNjisyAZnxqEuRQhg5jpSHr1RA6D9Gd4PyzjxUm94oizkuGYK7PTQ_bg",
             captcha_handler=captcha_handler,# функция для обработки капчи
-            # app_id=6287487  
+            # app_id=7614654  
             app_id=2685278
             )
         self.vk_session.auth()
