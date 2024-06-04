@@ -26,20 +26,20 @@ def captcha_handler(captcha):
 
 class VkPoster(ContentPoster):
     def __init__(self):
-        self.login="+79006398664"
+        self.login="+00000"
         self.group_id = -129592796
-        self.password="tgb_6!!jHG#6666"
-        self.token="vk1.a.iAT3_sClCSwAkAMSGMc78Oi5ELK_Fi3ErGgsWS-J9sBDsUCzpLNvCX0fYs_hqHx5inT9zmBZCeOu76_DMOrNUv-S8P08Uog7e7ShbcVDUV-Sev81L4pz-FhD1zjgtqwYZ1PHX2eytXlvCzyD_NKzBU-5Uv_xT0gNjisyAZnxqEuRQhg5jpSHr1RA6D9Gd4PyzjxUm94oizkuGYK7PTQ_bg"
+        self.password=")))))"
+        self.token="vk1.eeee"
         self.vk_session = vk_api.VkApi(
-            login=self.login,
-            password=self.password,
-            auth_handler=self.auth_handler,
-            token="vk1.a.iAT3_sClCSwAkAMSGMc78Oi5ELK_Fi3ErGgsWS-J9sBDsUCzpLNvCX0fYs_hqHx5inT9zmBZCeOu76_DMOrNUv-S8P08Uog7e7ShbcVDUV-Sev81L4pz-FhD1zjgtqwYZ1PHX2eytXlvCzyD_NKzBU-5Uv_xT0gNjisyAZnxqEuRQhg5jpSHr1RA6D9Gd4PyzjxUm94oizkuGYK7PTQ_bg",
-            captcha_handler=captcha_handler,# функция для обработки капчи
+            # login=self.login,
+            # password=self.password,
+            # auth_handler=self.auth_handler,
+            token="vk1.a.mFcyBXeNbNk2Ke9JALkKsNq8wn0sNeHtXGTACd8t3G0Yp602uszs_wClOH-m9PW72nJD09KnU6bu77sTmwl11rQ_IV7euur_idf3hPYX-iORPGLfh-iPrpXvVHKxNtPV8I-IGg91g1_MN3uVvLQrt-YjIZMhOjLyz6URns-LNN1p65I0XeMGHffbnzTO_FZOWURi1gJbyDegqtZYtuqMMQ",
+            # captcha_handler=captcha_handler,# функция для обработки капчи
             # app_id=7614654  
-            app_id=2685278
+            # app_id=3698024
             )
-        self.vk_session.auth()
+        # self.vk_session.auth()
         self.vk = self.vk_session.get_api()
         self.upload = vk_api.VkUpload(self.vk_session)
 

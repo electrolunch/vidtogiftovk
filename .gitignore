@@ -162,3 +162,5 @@ cython_debug/
 *.mp4
 *.gif
 vk_config.v2.json
+hash.txt
+vkpostdata.json
