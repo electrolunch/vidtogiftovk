@@ -1,10 +1,13 @@
+import os
 import time
 import vk_api
 import uuid
+import requests
+from aiogram.types import InputFile
 from tenacity import retry, stop_after_attempt, wait_fixed
 class ContentPoster():
     pass
-
+download_dir = 'downloads'
 def auth_handler():
     """ При двухфакторной аутентификации вызывается эта функция."""
     # Код двухфакторной аутентификации
@@ -58,6 +61,7 @@ class VkPoster(ContentPoster):
         attachments=[f"doc{doc['doc']['owner_id']}_{doc['doc']['id']}"])
         await log_func("gif uploaded to vk")
         return gif_path
+    
 
 class Tposter(ContentPoster):
     def __init__(self,scheduler,dp):
@@ -78,14 +82,27 @@ class Tposter(ContentPoster):
                 await self.send_photo(text, url)
             if type=='doc':
                 url=vk_post_data['attachments'][0][type]['url']
+                response = requests.get(url)
+                filename = url.split('/')[-1].split('_')[0]+'.gif'
+                filepath = os.path.join(download_dir, filename)
+                with open(filepath, 'wb') as f:
+                    f.write(response.content)
                 await log_func(url)
-                await self.send_doc(text, url)
+                # await self.send_doc(text, url)
+                await self.send_doc2(text, filepath)
+                os.remove(filepath)
+
         except Exception as e:
             await log_func(str(e))
             
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
     async def send_doc(self, text, url):
         await self.bot.send_animation(chat_id=self.channel_id, animation=url,caption=text)
+
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
+    async def send_doc2(self, text, filepath):
+        input_file = InputFile(filepath)
+        await self.bot.send_animation(chat_id=self.channel_id, animation=input_file,caption=text)
 
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
     async def send_photo(self, text, url):
