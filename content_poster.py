@@ -91,11 +91,15 @@ class Tposter(ContentPoster):
                 await log_func(url)
                 # await self.send_doc(text, url)
                 await self.send_doc2(text, filepath)
-                # os.remove(filepath)
+                os.remove(filepath)
                 with open('hash.txt', 'a') as f:
                     f.write(file_hash + '\n')
                 return filepath
         except Exception as e:
+            # if text message text has part "File too large for uploading"
+            if "File too large for uploading" in str(e):
+                with open('hash.txt', 'a') as f:
+                    f.write(file_hash + '\n')
             await log_func(str(e))
             
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))

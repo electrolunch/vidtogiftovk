@@ -7,7 +7,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from aiogram import Bot, Dispatcher, executor, types
 from instagram_parser import InstagramParser, InstagramPostInfo
 import requests
-from unittest.mock import Mock
+from unittest.mock import MagicMock
 import json
 
 class ContentProvider():
@@ -22,7 +22,8 @@ class VideoProvider(ContentProvider):
         self.scheduler = AsyncIOScheduler()
         self.scheduler.add_job(self.video_handler_cycle, "interval", seconds=50)
         self.video_handling_flag=True
-        self.message=1193643286
+        self.message = MagicMock()
+        self.message.chat.id=1193643286
 
         @self.dp.message_handler(content_types=types.ContentTypes.VIDEO)
         async def handle_docs_video(message: types.Message):
