@@ -75,6 +75,7 @@ class Tposter(ContentPoster):
             # print(vk_post_data)
             type=vk_post_data['attachments'][0]['type']
             text=vk_post_data['text']
+            file_hash=vk_post_data['hash']
             print(text)
             if type=='photo':
                 url=vk_post_data['attachments'][0][type]['sizes'][-1]['url']
@@ -90,16 +91,24 @@ class Tposter(ContentPoster):
                 await log_func(url)
                 # await self.send_doc(text, url)
                 await self.send_doc2(text, filepath)
-                os.remove(filepath)
-
+                # os.remove(filepath)
+                with open('hash.txt', 'a') as f:
+                    f.write(file_hash + '\n')
+                return filepath
         except Exception as e:
             await log_func(str(e))
             
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
     async def send_doc(self, text, url):
-        await self.bot.send_animation(chat_id=self.channel_id, animation=url,caption=text)
+        try:
+            await self.bot.send_document(chat_id=self.channel_id, document=url,caption=text)
+        except Exception as e:
+            raise e
 
-    @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
+    # def send_doc2_retry_error_callback(last_exception, attempt_number):
+    #     return None
+    
+    # @retry(stop=stop_after_attempt(3), wait=wait_fixed(2), retry_error_callback=send_doc2_retry_error_callback)
     async def send_doc2(self, text, filepath):
         input_file = InputFile(filepath)
         await self.bot.send_animation(chat_id=self.channel_id, animation=input_file,caption=text)

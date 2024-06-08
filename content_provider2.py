@@ -228,8 +228,7 @@ class Vk_provider(ContentProvider):
                 if hash not in hashes_old:
                     text = item['text']
                     type = item['attachments'][0]['type']
-                    with open('hash.txt', 'a') as f:
-                        f.write(hash + '\n')
+
                     print("Пост найден")
                     await self.vk_post_handler(item)
                     break

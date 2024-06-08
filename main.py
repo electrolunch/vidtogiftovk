@@ -42,7 +42,8 @@ async def VideoHandler(v_path):
 
 async def vk_post_handler(vkpostdata):
     print("пост из вк в телеграм")
-    await tpst.post_to_tg(vkpostdata,LogFunc)
+    filepath=await tpst.post_to_tg(vkpostdata,LogFunc)
+    os.remove(filepath)
 
 
 vkpr.SetVkPostHandler(vk_post_handler,LogFunc)
