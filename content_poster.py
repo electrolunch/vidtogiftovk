@@ -81,6 +81,8 @@ class Tposter(ContentPoster):
                 url=vk_post_data['attachments'][0][type]['sizes'][-1]['url']
                 await log_func(url)
                 await self.send_photo(text, url)
+                with open('hash.txt', 'a') as f:
+                    f.write(file_hash + '\n')
             if type=='doc':
                 url=vk_post_data['attachments'][0][type]['url']
                 response = requests.get(url)
@@ -92,10 +94,11 @@ class Tposter(ContentPoster):
                 # await self.send_doc(text, url)
                 await self.send_doc2(text, filepath)
                 os.remove(filepath)
-                return filepath
-                
-            with open('hash.txt', 'a') as f:
+                with open('hash.txt', 'a') as f:
                     f.write(file_hash + '\n')
+                return filepath
+            
+
         except Exception as e:
             # if text message text has part "File too large for uploading"
             if "File too large for uploading" in str(e):
