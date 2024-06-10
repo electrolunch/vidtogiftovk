@@ -32,6 +32,8 @@ while video.isOpened():
 
     # if last_frame is not None and mse(last_frame, frame) < 1000:
     #     continue
+    resize_factor = 0.4
+    frame = cv2.resize(frame, (int(frame.shape[1] * resize_factor), int(frame.shape[0] * resize_factor)))
 
     _, buffer = cv2.imencode(".jpg", frame)
     base64Frames.append(base64.b64encode(buffer).decode("utf-8"))
@@ -71,7 +73,7 @@ prompt = ChatPromptTemplate.from_messages([
 chat = ChatOpenAI(model="gpt-4o", max_tokens=4000, temperature=0.95, api_key=os.getenv("OPENAI_API_KEY"))
 chain = prompt | chat | StrOutputParser()
 with get_openai_callback() as cb:
-    res=chain.invoke({'poet': 'Цветаева'})
+    res=chain.invoke({"poet": "Цветаева"})
     print(cb)
 print(res)
     

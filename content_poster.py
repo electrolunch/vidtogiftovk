@@ -37,7 +37,7 @@ class VkPoster(ContentPoster):
             # login=self.login,
             # password=self.password,
             # auth_handler=self.auth_handler,
-            token="vk1.a.mFcyBXeNbNk2Ke9JALkKsNq8wn0sNeHtXGTACd8t3G0Yp602uszs_wClOH-m9PW72nJD09KnU6bu77sTmwl11rQ_IV7euur_idf3hPYX-iORPGLfh-iPrpXvVHKxNtPV8I-IGg91g1_MN3uVvLQrt-YjIZMhOjLyz6URns-LNN1p65I0XeMGHffbnzTO_FZOWURi1gJbyDegqtZYtuqMMQ",
+            token="vk1.a.G-Te88L6KyW59H6Ev41iWdOp08j82djZS7McoRlvQJ7ZTbuzpYaCWJ4Z9u28I7HLn3PVnzAtiFSx55qVZPFh40ZWyEogoI-hsPUlJauGkTq_4P8OeI5l0t4GATcIvjXIcEkQ-01BVkDEYe9Wb6rnahxPV1Mlnn__HY8XNZStPSGuBwzCc6ziKu1y4D3NJyOiaRJckEqc9xCeOsNr7SU-WQ",
             # captcha_handler=captcha_handler,# функция для обработки капчи
             # app_id=7614654  
             # app_id=3698024
