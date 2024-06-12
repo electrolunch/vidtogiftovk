@@ -115,7 +115,7 @@ class VkPoster(ContentPoster):
             # app_id=1,
             scope=sum(Permissions1)
             )
-        # self.vk_session.auth()
+        self.vk_session.auth()
         self.vk = self.vk_session.get_api()
         self.upload = vk_api.VkUpload(self.vk_session)
 
