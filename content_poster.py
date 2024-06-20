@@ -187,7 +187,7 @@ class Tposter(ContentPoster):
             raise e
 
     # def send_doc2_retry_error_callback(last_exception, attempt_number):
-    #     return None
+    #     return None # echo -n > filename.txt
     
     # @retry(stop=stop_after_attempt(3), wait=wait_fixed(2), retry_error_callback=send_doc2_retry_error_callback)
     async def send_doc2(self, text, filepath):
