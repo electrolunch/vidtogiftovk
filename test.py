@@ -1,87 +1,92 @@
-# from IPython.display import display, Image, Audio
+#%%
+# import asyncio
+# import os
+# import time
+# from content_provider2 import VideoProvider as vidp
+# from content_provider2 import Vk_provider as vkprov
+# from content_convertor import VideoConvertor as vconv
+from content_poster import VkPoster as vkpost
+# from content_poster import Tposter as tpost
+#%%
+# vp=vidp()
+# vc=vconv()
+vkp = vkpost()
+# vkpr=vkprov(vp.scheduler,vkp.vk)
+# tpst=tpost(vp.scheduler,vp.dp)
+vk_session=vkp.vk_session
+vk=vkp.vk
 
-import cv2  # We're using OpenCV to read video, to install !pip install opencv-python
-import base64
-import time
-import numpy as np
-from openai import OpenAI
-import os
-import requests
-from dotenv import load_dotenv
-load_dotenv(r"D:\PProjects\NN\botaireader\.env")
-from langchain_openai import ChatOpenAI
-from langchain.schema.messages import HumanMessage, SystemMessage
-from langchain.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
-from langchain_community.callbacks import get_openai_callback
+t=vk_session.method('newsfeed.get', {'count': 10, 'source_ids': 'groups'})
+import json
+#save
+with open('vkpostdata.json', 'w', encoding="utf-8") as outfile:
+    json.dump(t, outfile)
 
-def mse(imageA, imageB):
-    # Среднеквадратичная ошибка между двумя изображениями
-    err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
-    err /= float(imageA.shape[0] * imageA.shape[1])
-    return err
+items=t['items']
 
-video = cv2.VideoCapture(r"D:\PProjects\vidtogiftovk\downloads\doc617202016.gif")
-
-base64Frames = []
-last_frame = None
-while video.isOpened():
-    success, frame = video.read()
-    if not success:
-        break
-
-    # if last_frame is not None and mse(last_frame, frame) < 1000:
-    #     continue
-    resize_factor = 0.4
-    frame = cv2.resize(frame, (int(frame.shape[1] * resize_factor), int(frame.shape[0] * resize_factor)))
-
-    _, buffer = cv2.imencode(".jpg", frame)
-    base64Frames.append(base64.b64encode(buffer).decode("utf-8"))
-    last_frame = frame
-
-video.release()
-print(len(base64Frames), "frames read.")
-# frame_counter = len(base64Frames)
-# import imageio
-# images = [cv2.imdecode(np.frombuffer(base64.b64decode(frame), np.uint8), cv2.IMREAD_COLOR) for frame in base64Frames]
-# imageio.mimsave('output.gif', images)
-# exit()
-def generate_image_dicts(image_strings):
-    return [
-        {
-            "type": "image_url",
-            "image_url": {
-                "url": f"data:image/jpeg;base64,{img_str}", 
-                "detail": "auto",
-            },
-        } for img_str in image_strings
-    ]
-
-image_dicts=generate_image_dicts(base64Frames)
-prompt = ChatPromptTemplate.from_messages([
-    SystemMessage(
-        content="Ты специалист в русской поэзии. Ты помогаешь писать стихи в стиле разных поэтов."
-    ),
-    HumanMessage(
-        content=[
-            {"type": "text", "text": "Напиши стихотворение в стиле {poet} на основе приложенного набора фреймов из видео"},
-            *image_dicts
-        ]
-    )
-    ]
-)
-chat = ChatOpenAI(model="gpt-4o", max_tokens=4000, temperature=0.95, api_key=os.getenv("OPENAI_API_KEY"))
-chain = prompt | chat | StrOutputParser()
-with get_openai_callback() as cb:
-    res=chain.invoke({"poet": "Цветаева"})
-    print(cb)
-print(res)
-    
+print(len(items))
 
 
 
+min_likes=0
+min_reposts=0
+min_views=0
 
-# display_handle = display(None, display_id=True)
-# for img in base64Frames:
-#     display_handle.update(Image(data=base64.b64decode(img.encode("utf-8"))))
-#     time.sleep(0.025)
+filtered_items = []
+for item in items:
+    if item['type'] == 'post':
+        filtered_items.append(item)
+print(len(filtered_items))
+
+items = filtered_items
+filtered_items = []
+for item in items:
+    if (item['likes']['count'] >= min_likes and 
+        item['reposts']['count'] >= min_reposts and 
+        item['views']['count'] >= min_views):
+        filtered_items.append(item)
+print(len(filtered_items))
+
+filtered_items_has_photo = []
+filtered_items_has_one_photo = []
+for item in filtered_items:
+    # Проверяем наличие вложений типа "photo"
+    has_photo = False
+    photo_count = 0
+    for attachment in item.get('attachments', []):
+        if attachment['type'] == 'photo':
+            has_photo = True
+            photo_count += 1
+
+    if has_photo:
+        filtered_items_has_photo.append(item)
+
+    if photo_count == 1:
+        filtered_items_has_one_photo.append(item)
+
+print(len(filtered_items_has_photo))
+print(len(filtered_items_has_one_photo))
+# response = vk.wall.get(owner_id=-146916884, count=10)
+import json
+
+
+
+work_items=filtered_items_has_one_photo
+result = []
+for item in work_items:
+    text = item.get('text', '')  # Получаем текст поста (или пустую строку, если нет текста)
+    post_url=f"https://vk.com/wall{item['owner_id']}_{item['post_id']}"
+    # Находим фото максимального размера
+    max_photo_url = None
+    max_photo_height = 0
+
+    for attachment in item.get('attachments', []):
+        if attachment['type'] == 'photo':
+            for size in attachment['photo']['sizes']:
+                if size['height'] > max_photo_height:
+                    max_photo_height = size['height']
+                    max_photo_url = size['url']
+
+    result.append((post_url,text, max_photo_url))  # Добавляем кортеж (text, photo_url) в результат
+
+print(result)

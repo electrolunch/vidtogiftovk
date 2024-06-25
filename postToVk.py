@@ -1,6 +1,6 @@
 #%%
 import vk_api
-import requests
+# import requests
 import uuid
 #%%
 gif_path="video1.gif"

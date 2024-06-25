@@ -1,11 +1,13 @@
 from enum import IntEnum
 import os
 import time
+import jconfig.memory
 import vk_api
 import uuid
 import requests
 from aiogram.types import InputFile
 from tenacity import retry, stop_after_attempt, wait_fixed
+import jconfig 
 class ContentPoster():
     pass
 download_dir = 'downloads'
@@ -41,7 +43,7 @@ class Permissions1(IntEnum):
     # NOTIFY = 1
 
     #: Доступ к друзьям.
-    # FRIEND = 2
+    FRIEND = 2
 
     #: Доступ к фотографиям.
     # PHOTOS = 2**2
@@ -113,6 +115,7 @@ class VkPoster(ContentPoster):
             captcha_handler=captcha_handler,# функция для обработки капчи
             # app_id=7614654  
             # app_id=1,
+            # config=jconfig.memory.MemoryConfig,
             scope=sum(Permissions1)
             )
         self.vk_session.auth()
