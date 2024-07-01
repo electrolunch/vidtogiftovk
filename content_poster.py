@@ -105,7 +105,7 @@ class VkPoster(ContentPoster):
     def __init__(self):
         self.login="+79006398664"
         self.group_id = -129592796
-        self.password="tgb_6!!jHG#6666"
+        self.password="Dbdh566)/$"
         self.token="vk1.eeee"
         self.vk_session = vk_api.VkApi(
             login=self.login,
