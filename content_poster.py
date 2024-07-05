@@ -8,6 +8,7 @@ import requests
 from aiogram.types import InputFile
 from tenacity import retry, stop_after_attempt, wait_fixed
 import jconfig 
+import getpass
 class ContentPoster():
     pass
 download_dir = 'downloads'
@@ -106,19 +107,19 @@ class VkPoster(ContentPoster):
         self.login="+79006398664"
         self.group_id = -129592796
         self.password="Dbdh566)/$"
-        self.token="vk1.eeee"
+        self.token=getpass.getpass("Введите token: ")
         self.vk_session = vk_api.VkApi(
-            login=self.login,
-            password=self.password,
+            # login=self.login,
+            # password=self.password,
             auth_handler=self.auth_handler,
-            # token="vk1.a.G-Te88L6KyW59H6Ev41iWdOp08j82djZS7McoRlvQJ7ZTbuzpYaCWJ4Z9u28I7HLn3PVnzAtiFSx55qVZPFh40ZWyEogoI-hsPUlJauGkTq_4P8OeI5l0t4GATcIvjXIcEkQ-01BVkDEYe9Wb6rnahxPV1Mlnn__HY8XNZStPSGuBwzCc6ziKu1y4D3NJyOiaRJckEqc9xCeOsNr7SU-WQ",
+            token=self.token,
             captcha_handler=captcha_handler,# функция для обработки капчи
-            # app_id=7614654  
+            app_id=51944886,
             # app_id=1,
             # config=jconfig.memory.MemoryConfig,
             scope=sum(Permissions1)
             )
-        self.vk_session.auth()
+        # self.vk_session.auth()
         self.vk = self.vk_session.get_api()
         self.upload = vk_api.VkUpload(self.vk_session)
 
