@@ -117,6 +117,8 @@ class VideoProvider(ContentProvider):
     async def video_handler(self, message):
         self.message=message
         if self.video_handling_flag is False: return
+        vid_uuid = str(uuid.uuid4())
+        file_name=r"downloads\video"+vid_uuid+".mp4"
         if message.author_signature=="inst_url":
             if self.video_handling_flag is False: return
             video_url=await self.extract_video_url(message)
@@ -127,16 +129,13 @@ class VideoProvider(ContentProvider):
             if not response.ok:
                 await self.bot.send_message(chat_id=message.chat.id, text="Video is not loaded")
                 return
-            vid_uuid = str(uuid.uuid4())
-            file_name="video"+vid_uuid+".mp4"
             with open(file_name, 'wb') as f:
                 f.write(response.content)
             await self.bot.send_message(chat_id=message.chat.id, text="Video is loaded")
             await self.vid_func(file_name)
         else:
             await self.bot.send_message(chat_id=message.chat.id, text="Start loading...")
-            vid_uuid = str(uuid.uuid4())
-            file_name="video"+vid_uuid+".mp4"
+
             file_id = message.video.file_id
             file_info = await self.bot.get_file(file_id)
             print(file_info.file_path)
@@ -202,11 +201,12 @@ class Vk_provider(ContentProvider):
         self.group_id = -146916884
         self.log_func=print
 
-    def SetVkPostHandler(self,func,log_func=None):
+    def SetVkPostHandler(self,func=None,log_func=None):
         if log_func is not None:
             self.log_func=log_func
-        self.vk_post_handler=func
-        self.sheduller.add_job(self.vkpost_handler_cycle, "interval", seconds=100)
+        if func is not None:
+            self.vk_post_handler=func
+            self.sheduller.add_job(self.vkpost_handler_cycle, "interval", seconds=600)
 
 
 

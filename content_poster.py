@@ -128,15 +128,15 @@ class VkPoster(ContentPoster):
         remember_device = True
         return key, remember_device
 
-    async def LoadAndPostToPioner(self,gif_path,log_func):
+    async def LoadAndPostToPioner(self,doc_path,log_func):
         # gif_uuid = str(uuid.uuid4())
-        await log_func(f"start uploading gif {gif_path}")
-        doc = self.upload.document(gif_path,gif_path)
+        await log_func(f"start uploading doc {doc_path}")
+        doc = self.upload.document(doc_path,doc_path)
         # doc = self.upload.document_message(gif_path,peer_id=19156483)
         self.vk.wall.post(owner_id=self.group_id,message="", 
         attachments=[f"doc{doc['doc']['owner_id']}_{doc['doc']['id']}"])
-        await log_func("gif uploaded to vk")
-        return gif_path
+        await log_func("doc uploaded to vk")
+        return doc_path
     
 
 class Tposter(ContentPoster):

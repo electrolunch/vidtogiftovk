@@ -1,7 +1,7 @@
 import time
 import uuid
 import requests
-
+import os
 class ContentConvertor():
     pass
 
@@ -9,7 +9,7 @@ class VideoConvertor(ContentConvertor):
     def __init__(self):
         self.api_key = "9db6e6096e83c3b00996d8843d8ab869"
         # self.api_key = "d7b887b133f8efa16fe1b6f55f1767cd"
-
+        self.download_dir = r"downloads"
         self.url = "https://api.api2convert.com/v2/jobs"
         self.gif_name="video1.gif"
 
@@ -17,6 +17,7 @@ class VideoConvertor(ContentConvertor):
         await log_func("upload mp4 to convertor")
         up_url=self.GetUploadUrl()
         gif_name = str(uuid.uuid4())
+        gif_path=rf"{self.download_dir}\video"+gif_name+".gif"
         vid_path= vid_path
         resp=self.CreateJob(up_url,vid_path,gif_name)
         await log_func("conversation process...")
@@ -24,7 +25,7 @@ class VideoConvertor(ContentConvertor):
         await log_func("start downloading gif")
         self.DownLoadGif(resp.json()["id"]['job'])
         await log_func("gif downloaded")
-        return gif_name+'.gif'
+        return gif_path
         
     def WaitForAJob(self,job_id):
         while not self.should_stop(job_id):
@@ -90,6 +91,6 @@ class VideoConvertor(ContentConvertor):
         # print(json_response)
         output_uri = json_response['output'][0]['uri']
         response = requests.get(output_uri)
-        with open(json_response["output"][0]["filename"], "wb") as f:
+        with open(os.path.join(self.download_dir, json_response["output"][0]["filename"]), "wb") as f:
             f.write(response.content)
             
