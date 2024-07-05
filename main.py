@@ -34,6 +34,7 @@ async def upload_doc(doc_path, vkp, LogFunc):
 async def VideoHandler(v_path):
     try:
         gif_path=await vc.ConvertToGif(v_path,LogFunc)
+        print("gif_path ",gif_path)
     except Exception as e:
         await LogFunc(str(e))
         os.remove(v_path)
