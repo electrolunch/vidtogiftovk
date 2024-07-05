@@ -118,7 +118,7 @@ class VideoProvider(ContentProvider):
         self.message=message
         if self.video_handling_flag is False: return
         vid_uuid = str(uuid.uuid4())
-        file_name=r"downloads\video"+vid_uuid+".mp4"
+        file_name="downloads/video"+vid_uuid+".mp4"
         if message.author_signature=="inst_url":
             if self.video_handling_flag is False: return
             video_url=await self.extract_video_url(message)

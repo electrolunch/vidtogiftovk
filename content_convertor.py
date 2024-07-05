@@ -17,7 +17,7 @@ class VideoConvertor(ContentConvertor):
         await log_func("upload mp4 to convertor")
         up_url=self.GetUploadUrl()
         gif_name = str(uuid.uuid4())
-        gif_path=rf"{self.download_dir}\{gif_name}"+".gif"
+        gif_path=f"{self.download_dir}/{gif_name}"+".gif"
         vid_path= vid_path
         resp=self.CreateJob(up_url,vid_path,gif_name)
         await log_func("conversation process...")
