@@ -131,7 +131,7 @@ class VkPoster(ContentPoster):
     async def LoadAndPostToPioner(self,doc_path,log_func):
         # gif_uuid = str(uuid.uuid4())
         await log_func(f"start uploading doc {doc_path}")
-        doc = self.upload.document(doc_path,doc_path)
+        doc = self.upload.document(doc_path, os.path.basename(doc_path))
         # doc = self.upload.document_message(gif_path,peer_id=19156483)
         self.vk.wall.post(owner_id=self.group_id,message="", 
         attachments=[f"doc{doc['doc']['owner_id']}_{doc['doc']['id']}"])

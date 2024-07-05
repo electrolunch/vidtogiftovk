@@ -33,26 +33,29 @@ async def upload_doc(doc_path, vkp, LogFunc):
 
 async def VideoHandler(v_path):
     try:
-        # print("v_path ",v_path)
         gif_path=await vc.ConvertToGif(v_path,LogFunc)
-        await LogFunc("Removing audio from video")
-        sv_path=tools.add_string_to_filename(v_path,'_sv')
-        print("sv_path ",sv_path)
-        tools.remove_audio_from_video(v_path,sv_path)
-        await LogFunc("Audio removed")
-        os.remove(v_path)
     except Exception as e:
         await LogFunc(str(e))
         os.remove(v_path)
         return
+    
+    try:         
+        await LogFunc("Removing audio from video")
+        sv_path=tools.add_string_to_filename(v_path,'_sv')
+        print("sv_path ",sv_path)
+        tools.remove_audio_ffmpeg(v_path,sv_path)
+        await LogFunc("Audio removed")
+        os.remove(v_path)
+    except Exception as e:
+        await LogFunc(str(e))
+        sv_path=v_path
+   
     # await LogFunc(gif_path)
     time.sleep(10)
     await LogFunc("upload gif to vk")
-    gif_name = os.path.basename(gif_path)
-    await upload_doc(gif_name, vkp, LogFunc)
+    await upload_doc(gif_path, vkp, LogFunc)
     await LogFunc("upload video to vk")
-    sv_name=os.path.basename(sv_path)
-    await upload_doc(sv_name, vkp, LogFunc)
+    await upload_doc(sv_path, vkp, LogFunc)
 
 async def vk_post_handler(vkpostdata):
     print("пост из вк в телеграм")

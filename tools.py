@@ -1,5 +1,5 @@
 from moviepy.editor import VideoFileClip
-
+import subprocess
 import os
 def remove_audio_from_video(input_path, output_path):
     # Загрузить видео
@@ -16,7 +16,18 @@ def remove_audio_from_video(input_path, output_path):
         video.close()
         video_no_audio.close()
 
-
+def remove_audio_ffmpeg(input_path, output_path):
+    # Команда для удаления аудио с помощью FFmpeg
+    command = [
+        'ffmpeg', 
+        '-i', input_path,  # Входной файл
+        '-c', 'copy',      # Копировать видео и аудио потоки без перекодирования
+        '-an',             # Удалить все аудиодорожки
+        output_path        # Выходной файл
+    ]
+    
+    # Запуск команды
+    subprocess.run(command, check=True)
 
 def add_string_to_filename(filename, string_to_add):
     # Разделить имя файла и его расширение
