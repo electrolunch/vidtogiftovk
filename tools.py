@@ -37,3 +37,28 @@ def add_string_to_filename(filename, string_to_add):
     new_name = f"{name}{string_to_add}{ext}"
     
     return new_name
+
+
+def write_line_to_file(file_line, filename='temp.txt'):
+    with open(filename, 'a') as f:
+        f.write(file_line + '\n')
+
+def remove_line_from_file(file_line, filename='temp.txt'):
+    if not os.path.isfile(filename):
+        return
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+    with open(filename, 'w') as f:
+        for line in lines:
+            if line.strip() != file_line:
+                f.write(line)
+
+def check_line_in_file(file_line, filename='temp.txt'):
+    if not os.path.isfile(filename):
+        return False
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            if line.strip() == file_line:
+                return True
+    return False

@@ -7,6 +7,7 @@ from content_provider2 import Vk_provider as vkprov
 from content_convertor import VideoConvertor as vconv
 from content_poster import VkPoster as vkpost
 from content_poster import Tposter as tpost
+from content_poster import ImgurPoster as imgpost
 import tools as tools
 #%%
 vp=vidp()
@@ -14,7 +15,9 @@ vc=vconv()
 vkp = vkpost()
 vkpr=vkprov(vp.scheduler,vkp.vk)
 tpst=tpost(vp.scheduler,vp.dp)
-
+tpst_imgur=tpost(vp.scheduler,vp.dp)
+tpst_imgur.channel_id='@imgurlinks'
+imgpst=imgpost(vp.scheduler)
 async def LogFunc(text):
     await vp.func_log(text)
     print(text)
@@ -24,14 +27,13 @@ async def upload_doc(doc_path, vkp, LogFunc):
     for i in range(0,5):
         try:
             await vkp.LoadAndPostToPioner(doc_path,LogFunc)
-            os.remove(doc_path)
             break
         except Exception as e:
             if(str(e)=='An existing connection was forcibly closed by the remote host'):
                 continue
             await LogFunc(str(e))
 
-async def VideoHandler(v_path):
+async def VideoHandler(v_path,v_uuid):
     try:
         gif_path=await vc.ConvertToGif(v_path,LogFunc)
         print("gif_path ",gif_path)
@@ -57,10 +59,18 @@ async def VideoHandler(v_path):
     await upload_doc(gif_path, vkp, LogFunc)
     await LogFunc("upload video to vk")
     await upload_doc(sv_path, vkp, LogFunc)
+    result=await imgpst.post_video(sv_path, LogFunc)
+    if result is not None:
+        await LogFunc("post imgur link to tg")
+        await tpst_imgur.write_message(str(imgpst.v_link),LogFunc)
+
+    os.remove(sv_path)
 
 async def vk_post_handler(vkpostdata):
     print("пост из вк в телеграм")
     filepath=await tpst.post_to_tg(vkpostdata,LogFunc)
+
+    pass
 
 
 vkpr.SetVkPostHandler(vk_post_handler,LogFunc)

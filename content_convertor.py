@@ -13,10 +13,13 @@ class VideoConvertor(ContentConvertor):
         self.url = "https://api.api2convert.com/v2/jobs"
         self.gif_name="video1.gif"
 
-    async def ConvertToGif(self,vid_path,log_func):
+    async def ConvertToGif(self,vid_path,log_func,v_uuid=None):
         await log_func("upload mp4 to convertor")
         up_url=self.GetUploadUrl()
-        gif_name = str(uuid.uuid4())
+        if v_uuid is None:
+            gif_name ="vk_lapland#"+ str(uuid.uuid4())+'#gif'
+        else:
+            gif_name ="vk_lapland#"+ str(v_uuid)+'#gif'
         gif_path=f"{self.download_dir}/{gif_name}"+".gif"
         vid_path= vid_path
         resp=self.CreateJob(up_url,vid_path,gif_name)

@@ -118,7 +118,7 @@ class VideoProvider(ContentProvider):
         self.message=message
         if self.video_handling_flag is False: return
         vid_uuid = str(uuid.uuid4())
-        file_name="downloads/video"+vid_uuid+".mp4"
+        file_name="downloads/"+"vk_lapland#"+vid_uuid+"#video"+".mp4"
         if message.author_signature=="inst_url":
             if self.video_handling_flag is False: return
             video_url=await self.extract_video_url(message)
@@ -141,7 +141,7 @@ class VideoProvider(ContentProvider):
             print(file_info.file_path)
             await self.bot.download_file(file_info.file_path, file_name)
             await self.bot.send_message(chat_id=message.chat.id, text="Video is loaded")
-            await self.vid_func(file_name)
+            await self.vid_func(file_name,vid_uuid)
         # self.video_handling_flag=False
 
     def Loadurl(self,message):
