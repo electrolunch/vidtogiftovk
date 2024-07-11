@@ -328,7 +328,7 @@ class ImgurPoster(ContentPoster):
 
             return {"error": "Max retries exceeded"}
     
-    async def post_video(self, video_path,log_func, title="", description=""):
+    async def post_video(self, video_path,log_func, title=".", description=""):
         try:
             await log_func(f"start uploading video to imgur {video_path}")
             access_token = await self.get_access_token()
