@@ -141,7 +141,7 @@ class VideoProvider(ContentProvider):
             print(file_info.file_path)
             await self.bot.download_file(file_info.file_path, file_name)
             await self.bot.send_message(chat_id=message.chat.id, text="Video is loaded")
-            await self.vid_func(file_name,vid_uuid)
+            await self.vid_func(file_name,vid_uuid,message.text)
         # self.video_handling_flag=False
 
     def Loadurl(self,message):

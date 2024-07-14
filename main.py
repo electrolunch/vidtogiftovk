@@ -33,7 +33,7 @@ async def upload_doc(doc_path, vkp, LogFunc):
                 continue
             await LogFunc(str(e))
 
-async def VideoHandler(v_path,v_uuid):
+async def VideoHandler(v_path,v_uuid,message_text):
     try:
         gif_path=await vc.ConvertToGif(v_path,LogFunc)
         print("gif_path ",gif_path)
@@ -59,7 +59,8 @@ async def VideoHandler(v_path,v_uuid):
     await upload_doc(gif_path, vkp, LogFunc)
     await LogFunc("upload video to vk")
     await upload_doc(sv_path, vkp, LogFunc)
-    result=await imgpst.post_video(sv_path, LogFunc)
+    title=message_text if message_text else "-"
+    result=await imgpst.post_video(sv_path, LogFunc,title=title)
     if result is not None:
         await LogFunc("post imgur link to tg")
         await tpst_imgur.write_message(str(imgpst.v_link),LogFunc)
