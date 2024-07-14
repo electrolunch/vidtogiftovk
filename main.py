@@ -59,9 +59,9 @@ async def VideoHandler(v_path,v_uuid,message_text):
     await upload_doc(gif_path, vkp, LogFunc)
     await LogFunc("upload video to vk")
     await upload_doc(sv_path, vkp, LogFunc)
-    title=vidp.title if vidp.title else "-"
+    title=vp.title if vp.title else "-"
     result=await imgpst.post_video(sv_path, LogFunc,title=title)
-    vidp.title=""
+    vp.title=""
     if result is not None:
         await LogFunc("post imgur link to tg. title="+title)
         await tpst_imgur.write_message(str(imgpst.v_link),LogFunc)
