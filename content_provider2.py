@@ -25,10 +25,10 @@ class VideoProvider(ContentProvider):
         self.message = MagicMock()
         self.message.chat.id=1193643286
         self.last_message_text = ""
+        self.title=""
 
         @self.dp.message_handler(content_types=types.ContentTypes.VIDEO)
         async def handle_docs_video(message: types.Message):
-            self.last_message_text=message.text
             await self.handle_docs_video(message)
             
         # @self.bot.message_handler(func=lambda message: True)
@@ -36,6 +36,8 @@ class VideoProvider(ContentProvider):
         #     self.echo_message(message)
         @self.dp.message_handler(content_types=types.ContentTypes.TEXT)
         async def handle_docs_url(message: types.Message):
+            self.last_message_text=message.text
+            self.title=message.text
             await self.handle_docs_url(message)
 
         @self.dp.message_handler(commands=['loadurl'])
@@ -143,7 +145,7 @@ class VideoProvider(ContentProvider):
             print(file_info.file_path)
             await self.bot.download_file(file_info.file_path, file_name)
             await self.bot.send_message(chat_id=message.chat.id, text="Video is loaded")
-            await self.vid_func(file_name,vid_uuid,self.last_message_text)
+            await self.vid_func(file_name,vid_uuid,self.title)
         # self.video_handling_flag=False
 
     def Loadurl(self,message):
