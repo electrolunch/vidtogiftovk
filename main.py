@@ -81,7 +81,7 @@ vkpr.SetVkPostHandler(vk_post_handler,LogFunc)
 vp.SetVideoHandler(VideoHandler)
 
 job_executions = []
-def add_friend_job():
+async def add_friend_job():
     global job_executions
     current_time = datetime.now()
     
@@ -92,12 +92,12 @@ def add_friend_job():
         # Добавляем текущее время в список запусков
         job_executions.append(current_time)
         try:
-            vkp.add_random_friend_from_suggestions(LogFunc)
+            await vkp.add_random_friend_from_suggestions(LogFunc)
         except Exception as e:
-            LogFunc(str(e))
+            await LogFunc(str(e))
    
     else:
-        LogFunc("Job limit reached for the day.")
+        await LogFunc("Job limit reached for the day.")
 
 
 vp.scheduler.add_job(add_friend_job, "interval", seconds=600)
