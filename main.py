@@ -99,5 +99,5 @@ def add_friend_job():
         LogFunc("Job limit reached for the day.")
 
 
-vp.scheduler(add_friend_job, "interval", seconds=600)
+vp.scheduler.add_job(add_friend_job, "interval", seconds=600)
 vp.Start()
