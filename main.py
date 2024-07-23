@@ -79,4 +79,25 @@ async def vk_post_handler(vkpostdata):
 vkpr.SetVkPostHandler(vk_post_handler,LogFunc)
 vp.SetVideoHandler(VideoHandler)
 
+job_executions = []
+def add_friend_job():
+    global job_executions
+    current_time = datetime.now()
+    
+    # Фильтрация запусков, оставляем только те, что за последние 24 часа
+    job_executions = [time for time in job_executions if current_time - time < timedelta(days=1)]
+    
+    if len(job_executions) < 50:
+        # Добавляем текущее время в список запусков
+        job_executions.append(current_time)
+        try:
+            vkp.add_random_friend_from_suggestions(LogFunc)
+        except Exception as e:
+            LogFunc(str(e))
+   
+    else:
+        LogFunc("Job limit reached for the day.")
+
+
+vp.scheduler(add_friend_job, "interval", seconds=600)
 vp.Start()

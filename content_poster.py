@@ -12,6 +12,7 @@ import getpass
 import tools as tools
 import aiohttp
 import asyncio
+import random
 
 class ContentPoster():
     pass
@@ -153,6 +154,19 @@ class VkPoster(ContentPoster):
         attachments=[f"doc{doc['doc']['owner_id']}_{doc['doc']['id']}"])
         await log_func("doc uploaded to vk")
         return doc
+
+    async def add_random_friend_from_suggestions(self,log_func):
+        my_id=617202016
+        await log_func("get friends_getSuggestions")
+        friends_getSuggestions=self.vk_session.method('friends.getSuggestions', {'count': 40, 'fields': ['bdate','sex','photo_200_orig',"contacts"]})
+        random_friend = random.choice(friends_getSuggestions["items"])
+        await log_func("get friends_getMutual")
+        friends_getMutual=vk_session.method('friends.getMutual', {'source_uid':my_id , "target_uid": random_friend['id'],"order":"random","need_common_count":1})
+        friends_getMutual_count=friends_getMutual['common_count']
+        print(friends_getMutual_count)
+        log_func(f"friends_getMutual_count {friends_getMutual_count}")
+        if friends_getMutual_count > 30:
+            t=vk_session.method('friends.add', {'user_id': random_friend['id']})
     
 
 class Tposter(ContentPoster):
