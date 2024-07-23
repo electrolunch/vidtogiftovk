@@ -9,6 +9,7 @@ from content_poster import VkPoster as vkpost
 from content_poster import Tposter as tpost
 from content_poster import ImgurPoster as imgpost
 import tools as tools
+from datetime import datetime, timedelta
 #%%
 vp=vidp()
 vc=vconv()
