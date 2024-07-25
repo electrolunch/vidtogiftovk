@@ -154,12 +154,33 @@ class VkPoster(ContentPoster):
         attachments=[f"doc{doc['doc']['owner_id']}_{doc['doc']['id']}"])
         await log_func("doc uploaded to vk")
         return doc
+    def calculate_age(self,date_str):
+        if not date_str:
+            return "Дата не указана"
+        
+        try:
+            # Предполагаем, что формат даты - день.месяц.год
+            day, month, year = map(int, date_str.split('.'))
+            birth_date = datetime(year, month, day)
+            today = datetime.today()
+            age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+            return age
+        except ValueError:
+            return "error"
 
     async def add_random_friend_from_suggestions(self,log_func):
         my_id=617202016
         await log_func("get friends_getSuggestions")
-        friends_getSuggestions=self.vk_session.method('friends.getSuggestions', {'count': 40, 'fields': ['bdate','sex','photo_200_orig',"contacts"]})
-        random_friend = random.choice(friends_getSuggestions["items"])
+        friends_getSuggestions=self.vk_session.method('friends.getSuggestions', {'count': 40, 'fields': 'bdate'})
+        friends_getSuggestions_has_bdate = [friend for friend in friends_getSuggestions['items'] if friend.get('bdate')]
+
+        friends_getSuggestions_has_year = [friend for friend in friends_getSuggestions_has_bdate if self.calculate_age(friend['bdate']) != "error"]
+
+        friends_getSuggestions_over_40 = [friend for friend in friends_getSuggestions_has_year if calculate_age(friend['bdate']) > 40]
+        if len(friends_getSuggestions_over_40) == 0:
+            return
+
+        random_friend = random.choice(friends_getSuggestions_over_40["items"])
         await log_func("get friends_getMutual")
         friends_getMutual=self.vk_session.method('friends.getMutual', {'source_uid':my_id , "target_uid": random_friend['id'],"order":"random","need_common_count":1})
         friends_getMutual_count=friends_getMutual['common_count']
@@ -167,6 +188,7 @@ class VkPoster(ContentPoster):
         await log_func(f"friends_getMutual_count {friends_getMutual_count}")
         if friends_getMutual_count > 30:
             t=self.vk_session.method('friends.add', {'user_id': random_friend['id']})
+            return "ok"
     
 
 class Tposter(ContentPoster):

@@ -90,14 +90,17 @@ async def add_friend_job():
     
     if len(job_executions) < 50:
         # Добавляем текущее время в список запусков
-        job_executions.append(current_time)
         try:
-            await vkp.add_random_friend_from_suggestions(LogFunc)
+            res=await vkp.add_random_friend_from_suggestions(LogFunc)
+            if res == "ok":
+                job_executions.append(current_time)
+
         except Exception as e:
             await LogFunc(str(e))
    
     else:
-        await LogFunc("Job limit reached for the day.")
+        pass
+        # await LogFunc("Job limit reached for the day.")
 
 
 vp.scheduler.add_job(add_friend_job, "interval", seconds=600)
