@@ -88,7 +88,7 @@ async def add_friend_job():
     # Фильтрация запусков, оставляем только те, что за последние 24 часа
     job_executions = [time for time in job_executions if current_time - time < timedelta(days=1)]
     
-    if len(job_executions) < 50:
+    if len(job_executions) < 100:
         # Добавляем текущее время в список запусков
         try:
             res=await vkp.add_random_friend_from_suggestions(LogFunc)
@@ -97,6 +97,7 @@ async def add_friend_job():
 
         except Exception as e:
             await LogFunc(str(e))
+            await asyncio.sleep(4000)
    
     else:
         pass
