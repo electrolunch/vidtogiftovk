@@ -97,7 +97,7 @@ async def add_friend_job():
 
         except Exception as e:
             await LogFunc(str(e))
-            await asyncio.sleep(4000)
+            await asyncio.sleep(400)
    
     else:
         pass

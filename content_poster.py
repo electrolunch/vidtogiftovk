@@ -175,13 +175,14 @@ class VkPoster(ContentPoster):
         friends_getSuggestions=self.vk_session.method('friends.getSuggestions', {'count': 40, 'fields': 'bdate'})
         friends_getSuggestions_has_bdate = [friend for friend in friends_getSuggestions['items'] if friend.get('bdate')]
 
-        friends_getSuggestions_has_year = [friend for friend in friends_getSuggestions_has_bdate if self.calculate_age(friend['bdate']) != "error"]
+        # friends_getSuggestions_has_year = [friend for friend in friends_getSuggestions_has_bdate if self.calculate_age(friend['bdate']) != "error"]
 
-        friends_getSuggestions_over_40 = [friend for friend in friends_getSuggestions_has_year if calculate_age(friend['bdate']) > 40]
-        if len(friends_getSuggestions_over_40) == 0:
-            return
+        # friends_getSuggestions_over_40 = [friend for friend in friends_getSuggestions_has_year if calculate_age(friend['bdate']) > 40]
+        # if len(friends_getSuggestions_over_40) == 0:
+        #     return
+        # friends_getSuggestions=friends_getSuggestions_over_40
 
-        random_friend = random.choice(friends_getSuggestions_over_40["items"])
+        random_friend = random.choice(friends_getSuggestions["items"])
         await log_func("get friends_getMutual")
         friends_getMutual=self.vk_session.method('friends.getMutual', {'source_uid':my_id , "target_uid": random_friend['id'],"order":"random","need_common_count":1})
         friends_getMutual_count=friends_getMutual['common_count']
