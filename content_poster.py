@@ -175,7 +175,7 @@ class VkPoster(ContentPoster):
 
         for i in range(50):
             await log_func("get friends_getSuggestions")
-            friends_getSuggestions=self.vk_session.method('friends.getSuggestions', {'count': 200, 'fields': 'bdate'})
+            friends_getSuggestions=self.vk_session.method('friends.getSuggestions', {'count': 100, 'fields': 'bdate'})
 
             friends_getSuggestions_has_bdate = [friend for friend in friends_getSuggestions['items'] if friend.get('bdate')]
             friends_getSuggestions_has_year = [friend for friend in friends_getSuggestions_has_bdate if self.calculate_age(friend['bdate']) != "error"]
