@@ -171,12 +171,13 @@ class VkPoster(ContentPoster):
 
     async def add_random_friend_from_suggestions(self,log_func):
         my_id=617202016
-        await log_func("get friends_getSuggestions")
-        friends_getSuggestions=self.vk_session.method('friends.getSuggestions', {'count': 40, 'fields': 'bdate'})
 
-        friends_getSuggestions_has_bdate = [friend for friend in friends_getSuggestions['items'] if friend.get('bdate')]
 
         for i in range(50):
+            await log_func("get friends_getSuggestions")
+            friends_getSuggestions=self.vk_session.method('friends.getSuggestions', {'count': 200, 'fields': 'bdate'})
+
+            friends_getSuggestions_has_bdate = [friend for friend in friends_getSuggestions['items'] if friend.get('bdate')]
             friends_getSuggestions_has_year = [friend for friend in friends_getSuggestions_has_bdate if self.calculate_age(friend['bdate']) != "error"]
             print(i)
             friends_getSuggestions_over_40 = [friend for friend in friends_getSuggestions_has_year if calculate_age(friend['bdate']) > 40]
