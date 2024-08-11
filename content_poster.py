@@ -196,7 +196,7 @@ class VkPoster(ContentPoster):
         friends_getMutual_count=friends_getMutual['common_count']
         print(friends_getMutual_count)
         await log_func(f"friends_getMutual_count {friends_getMutual_count}")
-        if friends_getMutual_count > 30:
+        if friends_getMutual_count > 1:
             t=self.vk_session.method('friends.add', {'user_id': random_friend['id']})
             return "ok"
     
