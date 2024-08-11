@@ -11,7 +11,7 @@ vkp = vkpost()
 vk_session=vkp.vk_session
 vk=vkp.vk
 my_id=617202016
-friends_getSuggestions=vk_session.method('friends.getSuggestions', {'count': 40, 'fields': ['bdate','sex','photo_200_orig',"contacts"]})
+friends_getSuggestions=vk_session.method('friends.getSuggestions', {'count': 40, 'fields': "bdate, city, sex, country, nickname,followers_count, contacts"})
 
 random_friend = random.choice(friends_getSuggestions["items"])
 friends_getMutual=vk_session.method('friends.getMutual', {'source_uid':my_id , "target_uid": random_friend['id'],"order":"random","need_common_count":1})
