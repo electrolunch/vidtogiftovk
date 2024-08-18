@@ -180,15 +180,16 @@ class VkPoster(ContentPoster):
             friends_getSuggestions_has_bdate = [friend for friend in friends_getSuggestions['items'] if friend.get('bdate')]
             friends_getSuggestions_has_year = [friend for friend in friends_getSuggestions_has_bdate if self.calculate_age(friend['bdate']) != "error"]
             print("friends_getSuggestions_over_40 = [...]")
-            friends_getSuggestions_over_40 = [friend for friend in friends_getSuggestions_has_year if self.calculate_age(friend['bdate']) > 40]
-            if len(friends_getSuggestions_over_40) != 0:
+            friends_getSuggestions_over_40 = [friend for friend in friends_getSuggestions_has_year if self.calculate_age(friend['bdate']) > 30]
+            friends_getSuggestions_non_men = [friend for friend in friends_getSuggestions_over_40 if friend['sex'] != 2]
+            if len(friends_getSuggestions_non_men) != 0:
                 break
-            time.sleep(3)
+            time.sleep(30)
 
-        if len(friends_getSuggestions_over_40) == 0:
+        if len(friends_getSuggestions_non_men) == 0:
             return
 
-        friends_getSuggestions["items"]=friends_getSuggestions_over_40
+        friends_getSuggestions["items"]=friends_getSuggestions_non_men
 
         random_friend = random.choice(friends_getSuggestions["items"])
         await log_func("get friends_getMutual")
