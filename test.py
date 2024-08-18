@@ -22,7 +22,11 @@ friends_getSuggestions_over_40 = [friend for friend in friends_getSuggestions_ha
 friends_getSuggestions_non_men = [friend for friend in friends_getSuggestions_over_40 if friend['sex'] != 2]
 print(len(friends_getSuggestions_non_men))
 
+friends_getSuggestions["items"]=friends_getSuggestions_non_men
+
 random_friend = random.choice(friends_getSuggestions["items"])
+
+# random_friend = random.choice(friends_getSuggestions["items"])
 friends_getMutual=vk_session.method('friends.getMutual', {'source_uid':my_id , "target_uid": random_friend['id'],"order":"random","need_common_count":1})
 friends_getMutual_count=friends_getMutual['common_count']
 print(friends_getMutual_count)
