@@ -184,7 +184,7 @@ class VkPoster(ContentPoster):
             friends_getSuggestions_over_40 = [friend for friend in friends_getSuggestions_has_year if self.calculate_age(friend['bdate']) > 30]
             print("len friends_getSuggestions_over_40 = ",len(friends_getSuggestions_over_40))
             print("friends_getSuggestions_non_men = [...]")
-            friends_getSuggestions_non_men = [friend for friend in friends_getSuggestions_over_40 if friend['sex'] != 2]
+            friends_getSuggestions_non_men = [friend for friend in friends_getSuggestions_over_40 if friend.get('sex') != 2]
             print("len friends_getSuggestions_non_men = ",len(friends_getSuggestions_non_men))
             if len(friends_getSuggestions_non_men) != 0:
                 break
